@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Orochiverse — We deliver products that scale.</title>
+<meta name="description" content="Orochiverse — specialized consultants in AI, ML, IoT and system architecture. We embed with your team, design the spine, and ship." />
+<meta name="theme-color" content="#eef1f6" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Orochiverse — We deliver products that scale." />
+<meta property="og:description" content="Eight streams. One core. We turn signal into systems that scale, with the engineers who built them." />
+<meta property="og:site_name" content="Orochiverse" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#eef1f6;
+    --paper-2:#e1e6ee;
+    --ink:#0a0e1a;
+    --ink-2:#2a3242;
+    --ink-3:#6b7384;
+    --rule:rgba(10,14,26,.12);
+    --rule-strong:rgba(10,14,26,.26);
+    --accent:#4f8cff;
+    --accent-2:#7aa6ff;
+    --display: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{background:var(--paper)}
+  body{
+    font-family:var(--display);
+    color:var(--ink);
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  ::selection{background:var(--accent);color:var(--paper)}
+
+  /* Subtle paper grain */
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:1;
+    background-image:
+      radial-gradient(rgba(10,14,26,.045) 1px, transparent 1px),
+      radial-gradient(rgba(10,14,26,.03) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    mix-blend-mode:multiply;
+    opacity:.55;
+  }
+
+  /* Layout primitives */
+  .shell{
+    max-width:1440px;
+    margin:0 auto;
+    padding:0 48px;
+    position:relative;
+    z-index:2;
+  }
+  @media (max-width:780px){ .shell{padding:0 24px} }
+
+  .mono{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-3);
+  }
+
+  .rule{height:1px;background:var(--rule);width:100%}
+
+  /* Reveal on scroll */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* Header — solid ink, always. Mirrors the footer surface exactly,
+     top of page or scrolled, so the top and bottom of the site read as
+     the same bar. */
+  header.nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:var(--ink);
+    border-bottom:1px solid rgba(238,241,246,.12);
+  }
+  header.nav.scrolled{border-bottom-color:rgba(238,241,246,.18)}
+  /* Wordmark + links flip to paper on the ink surface */
+  header.nav .wordmark{color:var(--paper)}
+  header.nav .wordmark .name span{color:var(--accent)}
+  header.nav .wordmark .mark .fang{stroke:var(--accent)}
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:72px;
+  }
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links > a{
+    color:var(--paper);text-decoration:none;
+    font-size:13px;font-weight:500;letter-spacing:.01em;
+    position:relative;padding:6px 0;
+  }
+  .nav-links > a::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--paper);transform:scaleX(0);transform-origin:right;
+    transition:transform .4s cubic-bezier(.2,.7,.2,1);
+  }
+  .nav-links > a:hover::after{transform:scaleX(1);transform-origin:left}
+
+  /* Mobile nav toggle — sits on the blue surface */
+  .nav-toggle{
+    display:none; appearance:none; background:transparent; border:1px solid rgba(255,255,255,.45);
+    width:40px;height:40px; border-radius:999px; align-items:center;justify-content:center;
+    cursor:pointer; padding:0; color:var(--paper);
+  }
+  .nav-toggle span{display:block;width:16px;height:1.5px;background:currentColor;position:relative;transition:background .2s}
+  .nav-toggle span::before,.nav-toggle span::after{content:"";position:absolute;left:0;width:16px;height:1.5px;background:currentColor;transition:transform .25s ease}
+  .nav-toggle span::before{top:-5px}.nav-toggle span::after{top:5px}
+  body.menu-open .nav-toggle span{background:transparent}
+  body.menu-open .nav-toggle span::before{transform:translateY(5px) rotate(45deg)}
+  body.menu-open .nav-toggle span::after{transform:translateY(-5px) rotate(-45deg)}
+
+  @media (max-width:780px){
+    .nav-toggle{display:inline-flex}
+    .nav-inner{height:72px}
+    .nav-links{
+      position:fixed;inset:72px 0 0 0;background:var(--paper);
+      flex-direction:column;align-items:flex-start;justify-content:flex-start;
+      gap:0;padding:32px 20px 40px;
+      transform:translateY(-12px);opacity:0;pointer-events:none;
+      transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1);
+      border-top:1px solid var(--rule);
+      z-index:49;
+    }
+    body.menu-open .nav-links{opacity:1;transform:none;pointer-events:auto}
+    /* Inside the paper dropdown the links flip back to ink for legibility */
+    .nav-links > a{
+      width:100%; padding:18px 0; font-size:22px; font-weight:500; letter-spacing:-.01em;
+      border-bottom:1px solid var(--rule);
+      color:var(--ink);
+    }
+    .nav-links > a::after{display:none}
+    .nav-links .nav-cta{
+      margin-top:24px; align-self:flex-start;
+      font-size:14px; width:auto;
+    }
+    .nav-links .nav-cta .label{ padding:14px 20px 14px 22px }
+    .nav-links .nav-cta .icon{ width:36px;height:36px }
+  }
+  .nav-cta{
+    --cta-bg: var(--accent);
+    --cta-fg: #ffffff;
+    font-family:var(--display);font-size:12.5px;font-weight:600;letter-spacing:-.005em;text-transform:none;
+    display:inline-flex;align-items:center;gap:0;
+    padding:0;border:none;border-radius:999px;
+    background:var(--cta-bg);color:var(--cta-fg);text-decoration:none;
+    white-space:nowrap;line-height:1;
+    position:relative;overflow:hidden;isolation:isolate;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.18) inset,
+      0 8px 22px -10px color-mix(in oklab, var(--accent) 70%, transparent);
+    transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+  }
+  .nav-cta::after{display:none !important}
+  .nav-cta .label{
+    position:relative;z-index:2;
+    padding:8px 14px 8px 18px;
+  }
+  .nav-cta .icon{
+    position:relative;z-index:2;
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;margin:3px 3px 3px 0;
+    border-radius:999px;
+    background:rgba(255,255,255,.16);
+    transition:background .35s ease, transform .45s cubic-bezier(.2,.7,.2,1);
+  }
+  .nav-cta .icon svg{width:11px;height:11px;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+  .nav-cta .fill{
+    position:absolute;inset:0;z-index:1;
+    background:var(--accent-2);
+    transform:translateX(-101%);
+    transition:transform .55s cubic-bezier(.7,0,.2,1);
+    border-radius:inherit;
+  }
+  .nav-cta:hover{
+    transform:translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.22) inset,
+      0 16px 34px -12px color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+  .nav-cta:hover .fill{transform:translateX(0)}
+  .nav-cta:hover .icon{background:rgba(255,255,255,.18)}
+  .nav-cta:hover .icon svg{transform:translateX(2px)}
+
+  /* Wordmark */
+  .wordmark{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
+  .wordmark .mark{width:40px;height:40px;display:block;flex:0 0 auto}
+  .wordmark .name{
+    font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.018em;
+  }
+  .wordmark .name span{color:var(--accent)}
+
+  /* Hero badge mark */
+  .hero-badge{
+    position:absolute; top:96px; right:48px; z-index:2;
+    display:flex;align-items:center;gap:14px;
+    pointer-events:none;
+  }
+  .hero-badge .big{width:96px;height:96px;display:block}
+  .hero-badge .meta{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);writing-mode:vertical-rl;transform:rotate(180deg)}
+  @media (max-width:900px){ .hero-badge{top:80px;right:24px} .hero-badge .big{width:64px;height:64px} .hero-badge .meta{display:none} }
+  @media (max-width:520px){ .hero-badge{top:74px;right:16px} .hero-badge .big{width:48px;height:48px} }
+
+  /* Hero */
+  section.hero{
+    position:relative;
+    min-height:100vh;
+    padding-top:120px;
+    padding-bottom:60px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    overflow:hidden;
+  }
+  @media (max-width:780px){
+    section.hero{padding-top:110px;padding-bottom:60px;min-height:auto}
+  }
+  .hero canvas{
+    position:absolute;inset:0;width:100%;height:100%;
+    z-index:0;pointer-events:none;
+  }
+  .hero .shell{height:100%;display:flex;flex-direction:column;justify-content:space-between;flex:1}
+  .hero-meta{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    gap:24px;flex-wrap:wrap;
+  }
+  .hero-meta .col{max-width:320px}
+  .hero-meta .label{display:block;margin-bottom:8px}
+  .hero-meta p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
+
+  h1.headline{
+    font-size: clamp(40px, 9vw, 132px);
+    line-height:.94;
+    letter-spacing:-.04em;
+    font-weight:500;
+    margin: 80px 0 0;
+    max-width:1200px;
+  }
+  @media (max-width:780px){
+    h1.headline{margin-top:48px;line-height:.95;letter-spacing:-.03em}
+  }
+  h1.headline .accent{
+    color:var(--accent);font-style:italic;font-weight:400;
+    display:inline-block;
+    padding-right:.12em;
+    margin-right:-.04em;
+    background-image: linear-gradient(
+      100deg,
+      var(--accent) 0%,
+      var(--accent) 35%,
+      color-mix(in oklab, var(--accent) 55%, white) 50%,
+      var(--accent) 65%,
+      var(--accent) 100%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 7.5s cubic-bezier(.45,.05,.55,.95) 1.6s infinite;
+  }
+  @keyframes shimmer{
+    0%   { background-position: 120% 0; }
+    55%  { background-position: -20% 0; }
+    100% { background-position: -20% 0; }
+  }
+  h1.headline .caret{
+    display:inline-block;
+    width:.08em; height:.78em;
+    background:var(--accent);
+    margin-left:.08em;
+    transform: translateY(.04em);
+    animation: caret-blink 1.15s steps(2,end) infinite;
+  }
+  @keyframes caret-blink{ 0%,55%{opacity:1} 56%,100%{opacity:0} }
+  @media (prefers-reduced-motion: reduce){
+    h1.headline .accent{ animation:none; -webkit-text-fill-color:var(--accent); }
+    h1.headline .caret{ animation:none; opacity:1; }
+  }
+  h1.headline .thin{font-weight:300;color:var(--ink-2)}
+
+  .hero-sub{
+    margin-top:36px;
+    display:flex;justify-content:space-between;align-items:flex-end;
+    gap:48px;flex-wrap:wrap;
+  }
+  .hero-sub p{
+    margin:0;max-width:520px;font-size:18px;line-height:1.5;color:var(--ink-2);
+    font-weight:400;
+  }
+  @media (max-width:780px){
+    .hero-sub{gap:28px;align-items:flex-start;flex-direction:column}
+    .hero-sub p{font-size:16px}
+    .hero-cta{width:100%}
+  }
+  .hero-cta{
+    --cta-bg: var(--ink);
+    --cta-fg: var(--paper);
+    position:relative;
+    display:inline-grid;
+    grid-template-columns: auto 1px 1fr auto;
+    align-items:stretch;
+    gap:0;
+    padding:0;
+    border-radius:999px;
+    background:var(--cta-bg);
+    color:var(--cta-fg);
+    text-decoration:none;
+    overflow:hidden;
+    isolation:isolate;
+    border:1px solid var(--cta-bg);
+    transition: border-color .35s ease, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+  }
+  .hero-cta::before{
+    content:"";position:absolute;inset:0;z-index:-1;
+    background:var(--accent);
+    transform:translateX(-101%);
+    transition: transform .55s cubic-bezier(.7,0,.2,1);
+  }
+  .hero-cta:hover{ transform:translateY(-1px); box-shadow:0 14px 40px -12px color-mix(in oklab, var(--accent) 65%, transparent) }
+  .hero-cta:hover::before{ transform:translateX(0) }
+
+  .hero-cta .cta-tag{
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:color-mix(in oklab, var(--cta-fg) 60%, transparent);
+    align-self:center; padding:0 14px 0 22px; white-space:nowrap;
+  }
+  .hero-cta .cta-divider{ background:color-mix(in oklab, var(--cta-fg) 22%, transparent); margin:14px 0 }
+  .hero-cta .cta-label{
+    align-self:center; padding:18px 24px;
+    font-family:var(--display); font-weight:500; font-size:16px; letter-spacing:-.01em;
+    white-space:nowrap;
+  }
+  .hero-cta .cta-arrow{
+    align-self:stretch; display:flex; align-items:center; justify-content:center;
+    width:56px; background:color-mix(in oklab, var(--cta-fg) 8%, transparent);
+    border-left:1px solid color-mix(in oklab, var(--cta-fg) 14%, transparent);
+    transition: background .35s ease;
+  }
+  .hero-cta:hover .cta-arrow{ background:color-mix(in oklab, var(--cta-fg) 18%, transparent) }
+  .hero-cta .cta-arrow svg{ width:18px;height:18px; transition:transform .45s cubic-bezier(.2,.7,.2,1) }
+  .hero-cta:hover .cta-arrow svg{ transform:translateX(4px) }
+
+  @media (max-width:520px){
+    .hero-cta{ grid-template-columns: 1fr auto }
+    .hero-cta .cta-tag, .hero-cta .cta-divider{ display:none }
+    .hero-cta .cta-label{ padding-left:24px }
+  }
+
+  .hero-foot{
+    margin-top:80px;
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:24px;
+    border-top:1px solid var(--rule);
+    padding-top:24px;
+  }
+  .hero-foot .item .num{
+    font-family:var(--display);font-weight:500;font-size:34px;letter-spacing:-.02em;
+    display:block;
+  }
+  .hero-foot .item .lbl{margin-top:6px;display:block}
+  @media (max-width:780px){ .hero-foot{grid-template-columns:repeat(2,1fr);margin-top:56px;gap:20px} .hero-foot .item .num{font-size:28px} }
+
+  /* Section header */
+  .section-head{
+    display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:baseline;
+    padding-top:96px;padding-bottom:48px;
+  }
+  .section-head .num{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.08em}
+  .section-head h2{
+    font-size:clamp(36px,5.5vw,80px);
+    line-height:.95;letter-spacing:-.03em;font-weight:500;margin:0;
+  }
+  .section-head h2 .thin{font-weight:300;color:var(--ink-2)}
+  @media (max-width:780px){
+    .section-head{grid-template-columns:1fr;gap:16px;padding-top:64px;padding-bottom:32px}
+  }
+
+  /* Capabilities */
+  section.caps{padding-bottom:80px;border-top:1px solid var(--rule)}
+  .caps-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);
+    border-top:1px solid var(--rule);
+  }
+  .cap{
+    display:grid;grid-template-columns:80px 1fr auto;gap:24px;
+    padding:40px 0;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+    transition:background .4s ease;
+    cursor:default;
+  }
+  .cap:nth-child(odd){border-right:1px solid var(--rule);padding-right:48px}
+  .cap:nth-child(even){padding-left:48px}
+  .cap:hover{background:rgba(79,140,255,.04)}
+  .cap .idx{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.08em;padding-top:6px}
+  .cap .body h3{
+    margin:0 0 14px;font-size:30px;font-weight:500;letter-spacing:-.02em;line-height:1.05;
+  }
+  @media (max-width:780px){
+    .cap{grid-template-columns:48px 1fr auto;gap:16px;padding:32px 0}
+    .cap .body h3{font-size:24px}
+  }
+  .cap .body p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.55;max-width:48ch}
+  .cap .tags{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+  .cap .tags span{
+    font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-2);padding:7px 12px;
+    border:1px solid color-mix(in oklab, var(--ink) 20%, transparent);
+    background:color-mix(in oklab, var(--ink) 4%, transparent);
+    border-radius:999px;
+    transition: background .25s ease, color .25s ease, border-color .25s ease;
+  }
+  .cap:hover .tags span{ color:var(--ink); border-color:color-mix(in oklab, var(--accent) 55%, transparent); background:color-mix(in oklab, var(--accent) 8%, transparent) }
+  .cap .arrow-cell{
+    align-self:start;padding-top:6px;color:var(--ink-3);
+    transition:color .3s ease, transform .3s cubic-bezier(.2,.7,.2,1);
+  }
+  .cap:hover .arrow-cell{color:var(--accent);transform:translate(4px,-4px)}
+  @media (max-width:900px){
+    .caps-grid{grid-template-columns:1fr}
+    .cap:nth-child(odd){border-right:none;padding-right:0}
+    .cap:nth-child(even){padding-left:0}
+  }
+
+  /* About / Founder */
+  section.about{
+    border-top:1px solid var(--rule);
+    padding:120px 0 140px;
+    position:relative;
+  }
+  @media (max-width:780px){ section.about{padding:72px 0 88px} }
+  .about-grid{
+    margin-top:36px;
+    display:grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap:64px;
+    align-items:start;
+  }
+  @media (max-width:780px){ .about-grid{grid-template-columns:1fr;gap:36px} }
+
+  .about-card{
+    display:flex;flex-direction:column;gap:18px;
+    padding:22px;
+    border:1px solid var(--rule);
+    border-radius:14px;
+    background:#fff;
+    position:relative;
+  }
+  .about-card .portrait{
+    width:100%;aspect-ratio:1/1;border-radius:10px;
+    background:
+      radial-gradient(120% 80% at 30% 20%, color-mix(in oklab, var(--accent) 18%, var(--paper-2)), var(--paper-2)),
+      var(--paper-2);
+    display:grid;place-items:center;
+    color:var(--ink);font-family:var(--display);font-weight:600;
+    font-size:64px;letter-spacing:-.02em;
+    overflow:hidden;position:relative;
+  }
+  .about-card .portrait img{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    object-fit:cover;object-position:center 18%;
+    display:block;
+  }
+  .about-card .portrait::after{
+    content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(135deg, transparent 50%, color-mix(in oklab, var(--accent) 12%, transparent) 100%);
+    pointer-events:none;
+  }
+  .about-card .name{
+    font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.015em;
+    color:var(--ink);margin:0;
+  }
+  .about-card .role{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-3);margin:0;
+  }
+  .about-card .links{
+    display:flex;flex-direction:column;gap:6px;
+    margin-top:4px;padding-top:14px;border-top:1px solid var(--rule);
+  }
+  .about-card .links a{
+    font-family:var(--mono);font-size:12px;letter-spacing:.02em;
+    color:var(--ink-2);text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:color .25s ease, transform .25s ease;
+  }
+  .about-card .links a:hover{color:var(--accent);transform:translateX(2px)}
+  .about-card .links a svg{width:14px;height:14px;flex:0 0 auto}
+
+  .about-body{display:flex;flex-direction:column;gap:36px}
+  .about-quote{
+    font-family:var(--display);font-weight:400;
+    font-size:clamp(28px,3.2vw,44px);
+    line-height:1.15;letter-spacing:-.015em;
+    color:var(--ink);margin:0;
+    max-width:24ch;
+  }
+  .about-quote em{
+    font-style:italic;color:var(--accent);font-weight:400;
+    background-image: linear-gradient(
+      100deg,
+      var(--accent) 0%,
+      var(--accent) 38%,
+      color-mix(in oklab, var(--accent) 50%, white) 50%,
+      var(--accent) 62%,
+      var(--accent) 100%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display:inline-block;
+    padding-right:.1em;margin-right:-.04em;
+    animation: shimmer 7.5s cubic-bezier(.45,.05,.55,.95) 1.2s infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .about-quote em{ animation:none; -webkit-text-fill-color:var(--accent); }
+  }
+  .about-bio{
+    font-family:var(--display);
+    font-size:clamp(15px,1.25vw,17px);
+    line-height:1.55;color:var(--ink-2);
+    max-width:62ch;margin:0;
+  }
+  .about-bio strong{color:var(--ink);font-weight:500}
+  .about-stats{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:24px;
+    padding-top:20px;border-top:1px solid var(--rule);
+  }
+  @media (max-width:560px){ .about-stats{grid-template-columns:1fr 1fr} }
+  .about-stats .n{
+    font-family:var(--display);font-weight:500;
+    font-size:clamp(18px,1.6vw,22px);letter-spacing:-.01em;color:var(--ink);
+    display:block;line-height:1.1;
+  }
+  .about-stats .lbl{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);margin-top:8px;display:block;
+  }
+
+  /* Stitch-style staged reveal */
+  .stage > *{
+    opacity:0; transform:translateY(18px);
+    transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+  }
+  .stage.in > *{ opacity:1; transform:none; }
+  .stage.in > *:nth-child(1){ transition-delay: 0ms }
+  .stage.in > *:nth-child(2){ transition-delay: 90ms }
+  .stage.in > *:nth-child(3){ transition-delay: 180ms }
+  .stage.in > *:nth-child(4){ transition-delay: 270ms }
+  .stage.in > *:nth-child(5){ transition-delay: 360ms }
+  .stage.in > *:nth-child(6){ transition-delay: 450ms }
+
+  section.belief{
+    border-top:1px solid var(--rule);
+    padding:120px 0;
+  }
+  @media (max-width:780px){ section.belief{padding:72px 0} }
+  .belief-quote{
+    font-size:clamp(32px,4.2vw,60px);
+    line-height:1.1;letter-spacing:-.02em;font-weight:400;
+    max-width:1100px;margin:0;
+    color:var(--ink);
+  }
+  .belief-quote em{color:var(--accent);font-style:italic;font-weight:400}
+  .belief-attr{
+    margin-top:48px;display:flex;align-items:center;gap:16px;
+  }
+  .belief-attr .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+  /* Contact */
+  section.contact{
+    border-top:1px solid var(--rule);
+    background:var(--ink);color:var(--paper);
+    padding:120px 0 80px;
+    position:relative;overflow:hidden;
+  }
+  @media (max-width:780px){ section.contact{padding:80px 0 56px} }
+  section.contact::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:
+      radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:4px 4px;
+  }
+  section.contact .shell{position:relative;z-index:2}
+  section.contact .section-head{padding-top:0}
+  section.contact .section-head .num{color:rgba(238,241,246,.45)}
+  section.contact .section-head h2 .thin{color:rgba(238,241,246,.55)}
+
+  .contact-grid{
+    display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:start;
+    margin-top:24px;
+  }
+  @media (max-width:900px){ .contact-grid{grid-template-columns:1fr;gap:48px} }
+
+  .contact-form{display:flex;flex-direction:column;gap:24px}
+  .contact-form .field{display:flex;flex-direction:column;gap:8px}
+  .contact-form label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:rgba(238,241,246,.55);
+  }
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select{
+    appearance:none;background:transparent;border:none;
+    border-bottom:1px solid rgba(238,241,246,.25);
+    color:var(--paper);font:500 18px/1.4 var(--display);
+    padding:8px 0;outline:none;transition:border-color .3s ease;
+    border-radius:0;
+  }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder{color:rgba(238,241,246,.35)}
+  .contact-form input:focus,
+  .contact-form textarea:focus,
+  .contact-form select:focus{border-bottom-color:var(--accent-2)}
+  .contact-form textarea{resize:none;min-height:90px}
+  .contact-form select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(238,241,246,.55)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 4px center;padding-right:22px;
+  }
+  .contact-form select option{color:var(--ink);background:var(--paper)}
+  .contact-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media (max-width:600px){ .contact-form .row2{grid-template-columns:1fr} }
+
+  .submit{
+    align-self:flex-start;margin-top:8px;
+    display:inline-flex;align-items:center;gap:14px;
+    padding:18px 28px;border-radius:999px;border:none;cursor:pointer;
+    background:var(--accent);color:var(--paper);
+    font:500 15px/1 var(--display);letter-spacing:-.01em;
+    transition:background .3s ease, transform .3s ease;
+  }
+  .submit:hover{background:var(--accent-2);transform:translateY(-1px)}
+  .submit[disabled]{opacity:.6;cursor:default;transform:none}
+
+  .submit .arrow{width:18px;height:18px;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+  .submit:hover .arrow{transform:translateX(4px)}
+
+  .contact-aside .block{padding:24px 0;border-top:1px solid rgba(238,241,246,.18)}
+  .contact-aside .block:last-child{border-bottom:1px solid rgba(238,241,246,.18)}
+  .contact-aside .k{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:rgba(238,241,246,.55);display:block;margin-bottom:8px;
+  }
+  .contact-aside .v{font-size:18px;font-weight:500;color:var(--paper);text-decoration:none;display:block}
+  .contact-aside .v:hover{color:var(--accent-2)}
+  .contact-aside p.v{font-weight:400;color:rgba(238,241,246,.85);line-height:1.5}
+
+  .toast{
+    position:fixed;left:50%;bottom:32px;transform:translate(-50%,20px);
+    background:var(--paper);color:var(--ink);
+    padding:14px 22px;border-radius:999px;
+    font:500 14px/1 var(--display);letter-spacing:-.005em;
+    box-shadow:0 12px 32px rgba(0,0,0,.18);
+    opacity:0;transition:opacity .4s, transform .4s cubic-bezier(.2,.7,.2,1);
+    z-index:100;pointer-events:none;
+    display:flex;align-items:center;gap:10px;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+  /* Footer */
+  footer.foot{
+    background:var(--ink);color:rgba(238,241,246,.7);
+    padding:48px 0 32px;
+    border-top:1px solid rgba(238,241,246,.12);
+  }
+  .foot-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .foot-inner .wordmark{color:var(--paper)}
+  .foot-mono{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(238,241,246,.5)}
+
+  /* Marquee under hero */
+  .marquee{
+    overflow:hidden;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    padding:18px 0;background:var(--paper);
+    position:relative;z-index:2;
+  }
+  .marquee-track{
+    display:flex;gap:48px;white-space:nowrap;
+    animation: scroll 50s linear infinite;
+    width:max-content;
+  }
+  .marquee-track span{
+    font-family:var(--display);font-weight:300;font-size:34px;letter-spacing:-.02em;color:var(--ink-2);
+    display:inline-flex;align-items:center;gap:48px;
+  }
+  @media (max-width:780px){ .marquee-track span{font-size:22px;gap:28px} .marquee-track{gap:28px} }
+  .marquee-track span::after{
+    content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);
+  }
+  @keyframes scroll{ to { transform: translateX(-50%) } }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="shell nav-inner">
+    <a href="#top" class="wordmark" aria-label="Orochiverse">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.6" fill="none"/>
+        <path class="fang" d="M10 11 L 18 16 L 10 21" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <line class="stem" x1="20" y1="11" x2="20" y2="21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="name">orochi<span>·</span>verse</span>
+    </a>
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#approach">Approach</a>
+      <a href="#about">About</a>
+      <a href="#contact" class="nav-cta">
+        <span class="fill" aria-hidden="true"></span>
+        <span class="label">Contact</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <canvas id="orochi-canvas"></canvas>
+
+  <div class="hero-badge" aria-hidden="true">
+    <span class="meta">8 heads · one body · one core</span>
+    <svg class="big" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1" fill="none" opacity=".7"/>
+      <path d="M10 11 L 18 16 L 10 21" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <line x1="20" y1="11" x2="20" y2="21" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".7"/>
+    </svg>
+  </div>
+
+  <div class="shell">
+    <div class="hero-meta reveal">
+      <a href="#top" class="wordmark" aria-hidden="true" style="visibility:hidden"></a>
+      <div class="col" style="margin-left:auto">
+        <span class="mono label">Est. 2026 — Bengaluru / Remote</span>
+        <p>Eight streams. One core. We turn signal into systems that scale, with the engineers who built them.</p>
+      </div>
+    </div>
+
+    <h1 class="headline reveal">
+      We deliver <span class="accent">products</span><br/>
+      <span class="thin">that actually</span> scale.<span class="caret" aria-hidden="true"></span>
+    </h1>
+
+    <div class="hero-sub reveal">
+      <p>Specialized consultants in <strong style="font-weight:600;color:var(--ink)">AI, ML, IoT</strong> &amp; system architecture. We embed with your team, design the spine, and ship.</p>
+      <a href="#contact" class="hero-cta" aria-label="Start a project with Orochiverse">
+        <span class="cta-tag">§ Begin</span>
+        <span class="cta-divider" aria-hidden="true"></span>
+        <span class="cta-label">Start a project</span>
+        <span class="cta-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <div class="hero-foot reveal">
+      <div class="item"><span class="num">8+</span><span class="mono lbl">Data heads · One body</span></div>
+      <div class="item"><span class="num">10⁹</span><span class="mono lbl">Events/day target</span></div>
+      <div class="item"><span class="num">99.99%</span><span class="mono lbl">Uptime architectures</span></div>
+      <div class="item"><span class="num">∞</span><span class="mono lbl">Scale ceiling</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>IoT pipelines</span><span>Real-time ML</span><span>Edge inference</span><span>Distributed systems</span><span>Stream processing</span><span>Cloud-native</span>
+    <span>IoT pipelines</span><span>Real-time ML</span><span>Edge inference</span><span>Distributed systems</span><span>Stream processing</span><span>Cloud-native</span>
+  </div>
+</div>
+
+<!-- CAPABILITIES -->
+<section class="caps" id="capabilities">
+  <div class="shell">
+    <div class="section-head reveal">
+      <span class="num">§ 01 / 02</span>
+      <h2>Four disciplines.<br/><span class="thin">One delivery.</span></h2>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="caps-grid">
+
+      <div class="cap reveal">
+        <span class="idx">01</span>
+        <div class="body">
+          <h3>IoT &amp; Edge</h3>
+          <p>Fleet-grade pipelines for sensors, gateways, and edge devices. Telemetry that arrives, even when networks don't.</p>
+          <div class="tags">
+            <span>MQTT</span><span>Edge ML</span><span>OTA</span><span>Time-series</span>
+          </div>
+        </div>
+        <span class="arrow-cell">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </span>
+      </div>
+
+      <div class="cap reveal">
+        <span class="idx">02</span>
+        <div class="body">
+          <h3>Applied AI</h3>
+          <p>Production AI — not demos. RAG, agents, evals, guardrails. We build the boring parts that make the magic reliable.</p>
+          <div class="tags">
+            <span>LLM apps</span><span>Agents</span><span>RAG</span><span>Evals</span>
+          </div>
+        </div>
+        <span class="arrow-cell">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </span>
+      </div>
+
+      <div class="cap reveal">
+        <span class="idx">03</span>
+        <div class="body">
+          <h3>Machine Learning</h3>
+          <p>From dataset to deployed model. Feature stores, training infra, drift monitoring, the lot. Reproducible by default.</p>
+          <div class="tags">
+            <span>MLOps</span><span>Feature stores</span><span>Inference</span><span>Monitoring</span>
+          </div>
+        </div>
+        <span class="arrow-cell">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </span>
+      </div>
+
+      <div class="cap reveal">
+        <span class="idx">04</span>
+        <div class="body">
+          <h3>System Architecture</h3>
+          <p>The spine that holds it together. Event-driven, multi-region, observable, boring in the best way. Built to scale ten times before you need it to.</p>
+          <div class="tags">
+            <span>Distributed</span><span>Event-driven</span><span>K8s</span><span>SRE</span>
+          </div>
+        </div>
+        <span class="arrow-cell">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BELIEF -->
+<section class="belief" id="approach">
+  <div class="shell">
+    <div class="reveal">
+      <span class="mono">§ Our Belief</span>
+    </div>
+    <p class="belief-quote reveal" style="margin-top:32px">
+      Most ideas die in the gap between <em>prototype</em> and <em>production</em>.
+      <br/>We close that gap. We embed, we architect, we ship — and we stay until it scales.
+    </p>
+    <div class="belief-attr reveal">
+      <span class="dot"></span>
+      <span class="mono">— The Orochiverse principle</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / FOUNDER -->
+<section class="about" id="about">
+  <div class="shell">
+    <div class="section-head reveal">
+      <span class="num">§ Founder</span>
+      <h2>Built by an operator,<br/><span class="thin">not a deck.</span></h2>
+    </div>
+
+    <div class="about-grid stage">
+      <aside class="about-card">
+        <div class="portrait">
+          <img src="assets/prabal.jpg" alt="Prabal Jain, Founder &amp; CTO of Orochiverse" loading="lazy" decoding="async" width="800" height="800" />
+        </div>
+        <div>
+          <p class="name">Prabal Jain</p>
+          <p class="role">Founder &amp; CTO</p>
+        </div>
+        <div class="links">
+          <a href="https://www.linkedin.com/in/prabaljainn" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.21 24 24 23.23 24 22.28V1.72C24 .77 23.21 0 22.22 0z"/></svg>
+            linkedin.com/in/prabaljainn
+          </a>
+        </div>
+      </aside>
+
+      <div class="about-body">
+        <p class="about-quote">
+          &ldquo;Build fast, <em>fail fast.</em>&rdquo;
+        </p>
+        <p class="about-bio">
+          Business development across a wide variety of innovative technology, SaaS applications and solutions. Direct experience with <strong>digital transformation</strong>, IT delivery, <strong>cloud communications</strong>, <strong>contact center</strong>, value-add product / solution development and <strong>OEM relationship management</strong>. Open to executive positions across <strong>telecommunications</strong> and software development.
+        </p>
+        <div class="about-stats">
+          <div><span class="n">SaaS</span><span class="lbl">Cloud · Contact center</span></div>
+          <div><span class="n">B2B</span><span class="lbl">Digital transformation</span></div>
+          <div><span class="n">OEM</span><span class="lbl">Partnerships &amp; alliances</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="shell">
+    <div class="section-head reveal">
+      <span class="num">02 / 02</span>
+      <h2>Got an idea?<br/><span class="thin">Let's pressure-test it.</span></h2>
+    </div>
+
+    <div class="contact-grid">
+      <form class="contact-form reveal" id="contact-form" novalidate>
+        <div class="row2">
+          <div class="field">
+            <label for="f-name">Your name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Jane Doe" required />
+          </div>
+          <div class="field">
+            <label for="f-email">Work email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="jane@company.com" required />
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-company">Company</label>
+            <input id="f-company" name="company" type="text" placeholder="Company Inc." />
+          </div>
+          <div class="field">
+            <label for="f-scope">Scope</label>
+            <select id="f-scope" name="scope">
+              <option>Discovery / advisory</option>
+              <option>Architecture &amp; design</option>
+              <option>Build &amp; embed</option>
+              <option>Scale &amp; rescue</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-msg">What are you building?</label>
+          <textarea id="f-msg" name="msg" placeholder="A sentence or two — we'll take it from there." required></textarea>
+        </div>
+        <button class="submit" type="submit" id="submit-btn">
+          <span class="submit-label">Send message</span>
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <aside class="contact-aside reveal">
+        <div class="block">
+          <span class="k">Email</span>
+          <a href="mailto:prabal@orochiverse.com" class="v">prabal@orochiverse.com</a>
+        </div>
+        <div class="block">
+          <span class="k">Working hours</span>
+          <p class="v">Mon–Fri, 09:00 – 19:00 IST. We reply within one business day.</p>
+        </div>
+        <div class="block">
+          <span class="k">For founders</span>
+          <p class="v">Pre-seed to Series B. We take a small number of engagements per quarter so we can go deep.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="shell foot-inner">
+    <a href="#top" class="wordmark" style="color:var(--paper)">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.6" fill="none"/>
+        <path class="fang" d="M10 11 L 18 16 L 10 21" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <line class="stem" x1="20" y1="11" x2="20" y2="21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span class="name">orochi<span style="color:var(--accent-2)">·</span>verse</span>
+    </a>
+    <span class="foot-mono">© 2026 Orochiverse · Eight heads, one body.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span id="toast-msg"></span></div>
+
+<!-- HERO CANVAS — converging strands -->
+<script>
+(function(){
+  const canvas = document.getElementById('orochi-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W=0, H=0;
+
+  const NUM_STRANDS = 8;
+  const NODES_PER = 36;
+
+  let strands = [];
+
+  function resize(){
+    const r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = Math.floor(W*DPR);
+    canvas.height = Math.floor(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    initStrands();
+  }
+
+  function initStrands(){
+    strands = [];
+    const cx = W*0.82, cy = H*0.55;
+    const startX = -W*0.05;
+    for(let i=0;i<NUM_STRANDS;i++){
+      const t0 = i/(NUM_STRANDS-1);
+      const sy = H*0.10 + t0*H*0.85 + (Math.random()-0.5)*20;
+      const sx = startX;
+
+      const nodes = [];
+      for(let n=0;n<NODES_PER;n++){
+        const t = n/(NODES_PER-1);
+        const eX = t;
+        const eY = t*t;
+        const x = sx + (cx - sx)*eX;
+        const y = sy + (cy - sy)*eY + Math.sin(t*5 + i)*22*(1-eY);
+        nodes.push({ x, y, ox:x, oy:y, vx:0, vy:0, t });
+      }
+      strands.push({ nodes, hue: i, phase: Math.random()*Math.PI*2 });
+    }
+  }
+
+  let mx = -9999, my = -9999;
+  window.addEventListener('mousemove', e=>{
+    const r = canvas.getBoundingClientRect();
+    mx = e.clientX - r.left;
+    my = e.clientY - r.top;
+  }, {passive:true});
+  // mouseleave on window is unreliable; mouseout with no relatedTarget fires
+  // when the cursor exits the viewport for real.
+  document.addEventListener('mouseout', e=>{
+    if(!e.relatedTarget && !e.toElement){ mx=-9999; my=-9999; }
+  });
+
+  let raf=0, t0=performance.now();
+  function tick(){
+    const t = (performance.now()-t0)/1000;
+
+    // Trail effect — paint paper-tinted overlay
+    ctx.fillStyle = 'rgba(238,241,246,0.18)';
+    ctx.fillRect(0,0,W,H);
+
+    const cx = W*0.82, cy = H*0.55;
+
+    for(let s=0;s<strands.length;s++){
+      const strand = strands[s];
+      const nodes = strand.nodes;
+
+      for(let i=0;i<nodes.length;i++){
+        const n = nodes[i];
+        const wob = Math.sin(t*0.7 + strand.phase + i*0.25)*8*(1-n.t*0.7);
+        const tx = n.ox + Math.cos(strand.phase + t*0.4 + i*0.12)*wob;
+        const ty = n.oy + Math.sin(strand.phase + t*0.4 + i*0.12)*wob;
+
+        const dx = n.x - mx, dy = n.y - my;
+        const d2 = dx*dx + dy*dy;
+        let fx=0, fy=0;
+        if(d2 < 140*140){
+          const d = Math.sqrt(d2)+0.001;
+          const f = (140 - d)/140 * 0.6;
+          fx = (dx/d)*f; fy = (dy/d)*f;
+        }
+
+        n.vx += (tx - n.x)*0.04 + fx;
+        n.vy += (ty - n.y)*0.04 + fy;
+        n.vx *= 0.86;
+        n.vy *= 0.86;
+        n.x += n.vx;
+        n.y += n.vy;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(nodes[0].x, nodes[0].y);
+      for(let i=1;i<nodes.length-1;i++){
+        const xc = (nodes[i].x + nodes[i+1].x)/2;
+        const yc = (nodes[i].y + nodes[i+1].y)/2;
+        ctx.quadraticCurveTo(nodes[i].x, nodes[i].y, xc, yc);
+      }
+      ctx.lineTo(nodes[nodes.length-1].x, nodes[nodes.length-1].y);
+
+      const grad = ctx.createLinearGradient(nodes[0].x, nodes[0].y, cx, cy);
+      grad.addColorStop(0, 'rgba(42,50,66,0.04)');
+      grad.addColorStop(0.55, 'rgba(79,140,255,0.20)');
+      grad.addColorStop(1, 'rgba(79,140,255,0.7)');
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.1;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    const pulse = 1 + Math.sin(t*1.6)*0.25;
+    const grad2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 110*pulse);
+    grad2.addColorStop(0, 'rgba(79,140,255,0.34)');
+    grad2.addColorStop(0.45, 'rgba(79,140,255,0.10)');
+    grad2.addColorStop(1, 'rgba(79,140,255,0)');
+    ctx.fillStyle = grad2;
+    ctx.beginPath(); ctx.arc(cx, cy, 110*pulse, 0, Math.PI*2); ctx.fill();
+
+    ctx.strokeStyle = 'rgba(79,140,255,0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, 18 + Math.sin(t*1.6)*2, 0, Math.PI*2); ctx.stroke();
+
+    ctx.fillStyle = '#4f8cff';
+    ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+
+    raf = requestAnimationFrame(tick);
+  }
+
+  function paintBg(){
+    const css = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim() || '#eef1f6';
+    ctx.fillStyle = css; ctx.fillRect(0,0,W,H);
+  }
+
+  function start(){
+    resize(); paintBg();
+    if(reduceMotion){
+      // Paint one static frame and stop.
+      tick(); cancelAnimationFrame(raf);
+    } else {
+      tick();
+    }
+  }
+  start();
+
+  // Coalesce resize storms (mobile address-bar show/hide fires a flood).
+  let resizeT;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeT);
+    resizeT = setTimeout(()=>{
+      cancelAnimationFrame(raf);
+      start();
+    }, 120);
+  });
+})();
+</script>
+
+<!-- Scroll behaviour + reveals + form + nav -->
+<script>
+(function(){
+  // Reveal on scroll — also immediately reveal anything already in viewport.
+  function initReveals(){
+    const els = document.querySelectorAll('.reveal, .stage');
+    const vh = window.innerHeight || 800;
+    els.forEach(el=>{
+      const r = el.getBoundingClientRect();
+      if(r.top < vh * 0.95) el.classList.add('in');
+    });
+    if(!('IntersectionObserver' in window)){
+      els.forEach(el=>el.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(el=>{ if(!el.classList.contains('in')) io.observe(el); });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initReveals);
+  } else {
+    initReveals();
+  }
+  // Safety: ensure everything reveals after 1.2s no matter what.
+  setTimeout(()=>document.querySelectorAll('.reveal, .stage').forEach(el=>el.classList.add('in')), 1200);
+
+  // Nav scroll state.
+  const nav = document.getElementById('nav');
+  const onScroll = ()=>{
+    if(window.scrollY > 40) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Mobile menu toggle.
+  const toggle = document.getElementById('nav-toggle');
+  const links = document.getElementById('nav-links');
+  if(toggle && links){
+    const setOpen = (open)=>{
+      document.body.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    toggle.addEventListener('click', ()=> setOpen(!document.body.classList.contains('menu-open')));
+    links.addEventListener('click', e=>{ if(e.target.closest('a')) setOpen(false); });
+    window.addEventListener('resize', ()=>{ if(window.innerWidth > 780) setOpen(false); });
+  }
+
+  // Smooth in-page links.
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id = a.getAttribute('href');
+      if(id.length<2) return;
+      const t = document.querySelector(id);
+      if(!t) return;
+      e.preventDefault();
+      window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 72, behavior:'smooth' });
+    });
+  });
+
+  // Contact form — opens user's mail client with a pre-filled draft.
+  const form = document.getElementById('contact-form');
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toast-msg');
+  const btn = document.getElementById('submit-btn');
+  const btnLabel = btn.querySelector('.submit-label');
+
+  let toastT;
+  const showToast = (msg, ms = 2800)=>{
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(()=> toast.classList.remove('show'), ms);
+  };
+
+  const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const data = new FormData(form);
+    const name    = (data.get('name')    || '').toString().trim();
+    const email   = (data.get('email')   || '').toString().trim();
+    const company = (data.get('company') || '').toString().trim();
+    const scope   = (data.get('scope')   || '').toString().trim();
+    const msg     = (data.get('msg')     || '').toString().trim();
+
+    if(!name || !email || !msg){
+      showToast('Please fill the required fields.');
+      return;
+    }
+    if(!isEmail(email)){
+      showToast('That email looks off — mind checking it?');
+      return;
+    }
+
+    btn.disabled = true;
+    btnLabel.textContent = 'Opening mail…';
+
+    const subject = `[Orochiverse] New enquiry from ${name}${company ? ' · '+company : ''}`;
+    const lines = [
+      `Name:    ${name}`,
+      `Email:   ${email}`,
+      company ? `Company: ${company}` : null,
+      scope   ? `Scope:   ${scope}`   : null,
+      '',
+      '—',
+      msg,
+      '',
+      '—',
+      'Sent via orochiverse.com'
+    ].filter(Boolean);
+    const body = lines.join('\n');
+    const href = `mailto:prabal@orochiverse.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = href;
+
+    setTimeout(()=>{
+      btn.disabled = false;
+      btnLabel.textContent = 'Send message';
+      showToast('Mail client opened — send the draft to finish.', 3200);
+    }, 600);
+  });
+})();
+</script>
+
+</body>
+</html>
