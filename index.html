@@ -1220,9 +1220,14 @@
 
       for(let i=0;i<nodes.length;i++){
         const n = nodes[i];
-        const wob = Math.sin(t*0.7 + strand.phase + i*0.25)*8*(1-n.t*0.7);
-        const tx = n.ox + Math.cos(strand.phase + t*0.4 + i*0.12)*wob;
-        const ty = n.oy + Math.sin(strand.phase + t*0.4 + i*0.12)*wob;
+        /* Primary wave — larger amplitude, faster */
+        const wave1 = Math.sin(t*1.2 + strand.phase + i*0.22)*18*(1-n.t*0.5);
+        /* Secondary wave — offset frequency for organic feel */
+        const wave2 = Math.sin(t*0.6 + strand.phase*1.7 + i*0.35)*10*(1-n.t*0.6);
+        /* Slow drift */
+        const drift = Math.cos(t*0.3 + strand.phase*2.3)*6*(1-n.t*0.4);
+        const tx = n.ox + Math.cos(strand.phase + t*0.55 + i*0.14)*(wave1 + drift);
+        const ty = n.oy + Math.sin(strand.phase + t*0.55 + i*0.14)*(wave1 + wave2);
 
         const dx = n.x - mx, dy = n.y - my;
         const d2 = dx*dx + dy*dy;
@@ -1233,10 +1238,10 @@
           fx = (dx/d)*f; fy = (dy/d)*f;
         }
 
-        n.vx += (tx - n.x)*0.04 + fx;
-        n.vy += (ty - n.y)*0.04 + fy;
-        n.vx *= 0.86;
-        n.vy *= 0.86;
+        n.vx += (tx - n.x)*0.05 + fx;
+        n.vy += (ty - n.y)*0.05 + fy;
+        n.vx *= 0.84;
+        n.vy *= 0.84;
         n.x += n.vx;
         n.y += n.vy;
       }
