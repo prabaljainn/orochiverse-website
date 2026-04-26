@@ -1204,6 +1204,32 @@
     if(!e.relatedTarget && !e.toElement){ mx=-9999; my=-9999; }
   });
 
+  /* ── DATA PACKETS ── */
+  const packets = [];
+  let lastSpawn = 0;
+  const PACKET_SPEED = 0.003;  /* base progress per frame (0→1) */
+  let nextSpawn = 1;           /* seconds until next burst */
+  let coreFlash = 0;           /* flash intensity when packet arrives */
+
+  function spawnPacket(t){
+    const si = Math.floor(Math.random()*strands.length);
+    const speed = PACKET_SPEED * (0.7 + Math.random() * 0.6);
+    packets.push({ strand: si, progress: 0, born: t, speed });
+    nextSpawn = 1 + Math.random() * 2;
+  }
+
+  function getPacketPos(strand, progress){
+    const nodes = strand.nodes;
+    const idx = progress * (nodes.length - 1);
+    const i = Math.floor(idx);
+    const f = idx - i;
+    if(i >= nodes.length - 1) return { x: nodes[nodes.length-1].x, y: nodes[nodes.length-1].y };
+    return {
+      x: nodes[i].x + (nodes[i+1].x - nodes[i].x) * f,
+      y: nodes[i].y + (nodes[i+1].y - nodes[i].y) * f
+    };
+  }
+
   let raf=0, t0=performance.now();
   function tick(){
     const t = (performance.now()-t0)/1000;
@@ -1266,20 +1292,77 @@
       ctx.stroke();
     }
 
+    /* ── SPAWN & UPDATE PACKETS ── */
+    if(t - lastSpawn > nextSpawn){
+      spawnPacket(t);
+      lastSpawn = t;
+    }
+
+    /* Decay core flash */
+    coreFlash *= 0.92;
+
+    for(let p = packets.length - 1; p >= 0; p--){
+      const pkt = packets[p];
+      pkt.progress += pkt.speed;
+
+      if(pkt.progress >= 1){
+        /* Packet arrived at core — flash! */
+        coreFlash = Math.min(coreFlash + 0.7, 1);
+        packets.splice(p, 1);
+        continue;
+      }
+
+      const strand = strands[pkt.strand];
+      const pos = getPacketPos(strand, pkt.progress);
+
+      /* Glow trail */
+      const trailLen = 6;
+      for(let tr = trailLen; tr >= 0; tr--){
+        const tp = Math.max(0, pkt.progress - tr * 0.018);
+        const tpos = getPacketPos(strand, tp);
+        const alpha = (1 - tr/trailLen) * 0.5;
+        const radius = (1 - tr/trailLen) * 3.5 + 1;
+        ctx.beginPath();
+        ctx.arc(tpos.x, tpos.y, radius, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(0,230,118,${alpha})`;
+        ctx.fill();
+      }
+
+      /* Main packet dot */
+      const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 14);
+      glow.addColorStop(0, 'rgba(0,230,118,0.6)');
+      glow.addColorStop(0.4, 'rgba(0,230,118,0.15)');
+      glow.addColorStop(1, 'rgba(0,230,118,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(pos.x, pos.y, 14, 0, Math.PI*2); ctx.fill();
+
+      ctx.fillStyle = '#00e676';
+      ctx.beginPath(); ctx.arc(pos.x, pos.y, 3, 0, Math.PI*2); ctx.fill();
+    }
+
+    /* ── CORE GLOW ── */
     const pulse = 1 + Math.sin(t*1.6)*0.25;
+    /* Mix blue + green flash */
+    const fr = Math.floor(coreFlash * 255);
+    const coreR = Math.floor(79 * (1 - coreFlash));
+    const coreG = Math.floor(140 + (230 - 140) * coreFlash);
+    const coreB = Math.floor(255 * (1 - coreFlash * 0.5));
+    const coreCol = `rgba(${coreR},${coreG},${coreB}`;
+
     const grad2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 110*pulse);
-    grad2.addColorStop(0, 'rgba(79,140,255,0.34)');
-    grad2.addColorStop(0.45, 'rgba(79,140,255,0.10)');
-    grad2.addColorStop(1, 'rgba(79,140,255,0)');
+    grad2.addColorStop(0, coreCol+',0.40)');
+    grad2.addColorStop(0.45, coreCol+',0.12)');
+    grad2.addColorStop(1, coreCol+',0)');
     ctx.fillStyle = grad2;
     ctx.beginPath(); ctx.arc(cx, cy, 110*pulse, 0, Math.PI*2); ctx.fill();
 
-    ctx.strokeStyle = 'rgba(79,140,255,0.35)';
+    ctx.strokeStyle = coreCol+',0.40)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(cx, cy, 18 + Math.sin(t*1.6)*2, 0, Math.PI*2); ctx.stroke();
 
-    ctx.fillStyle = '#4f8cff';
-    ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+    const dotCol = coreFlash > 0.1 ? '#00e676' : '#4f8cff';
+    ctx.fillStyle = dotCol;
+    ctx.beginPath(); ctx.arc(cx, cy, 5 + coreFlash*3, 0, Math.PI*2); ctx.fill();
 
     raf = requestAnimationFrame(tick);
   }
