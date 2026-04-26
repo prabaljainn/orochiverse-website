@@ -1,0 +1,13 @@
+/* TEAM */
+  Founder & CTO: Prabal Jain
+  Contact: prabal [at] orochiverse.com
+  LinkedIn: https://www.linkedin.com/in/prabaljainn
+  From: Bengaluru, India
+
+/* SITE */
+  Last update: 2026/04/27
+  Language: English
+  Doctype: HTML5
+  Standards: HTML5, CSS3, ES2020
+  Components: Hand-rolled, no framework
+  Hosting: Static

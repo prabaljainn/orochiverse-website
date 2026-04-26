@@ -1,0 +1,4 @@
+Contact: mailto:prabal@orochiverse.com
+Expires: 2027-04-27T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://orochiverse.com/.well-known/security.txt
