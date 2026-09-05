@@ -14,6 +14,14 @@
 <meta name="googlebot" content="index,follow" />
 
 <link rel="canonical" href="https://orochiverse.com/" />
+<script>
+  // Language: saved choice, else browser language. Applied before paint so JP type rules load with the CSS.
+  (function(){ try{
+    var saved = localStorage.getItem("lang");
+    var nav = (navigator.languages || [navigator.language || "en"]).join(",").toLowerCase();
+    document.documentElement.lang = (saved === "ja" || saved === "en") ? saved : (nav.indexOf("ja") === 0 || nav.indexOf(",ja") > -1 ? "ja" : "en");
+  }catch(e){} })();
+</script>
 
 <!-- Favicons + PWA icons -->
 <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg" />
@@ -55,7 +63,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
 
 <!-- Structured data (Organization + WebSite + Person) -->
 <script type="application/ld+json">
@@ -211,7 +219,7 @@
   .nav-status i{width:7px;height:7px;background:#00e676;display:block;animation:blink 2.2s steps(2,end) infinite}
   @keyframes blink{50%{opacity:.25}}
   .nav-links{display:flex;gap:28px;align-items:center}
-  .nav-links > a{color:var(--paper);text-decoration:none;font-size:13px;font-weight:500;position:relative;padding:6px 0}
+  .nav-links > a{color:var(--paper);text-decoration:none;font-size:13px;font-weight:500;position:relative;padding:6px 0;white-space:nowrap}
   .nav-links > a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--paper);transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease-out)}
   .nav-links > a:hover::after{transform:scaleX(1);transform-origin:left}
   .nav-cta{--cta-bg:var(--accent);font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;padding:0;border-radius:999px;background:var(--cta-bg);color:#fff;text-decoration:none;white-space:nowrap;line-height:1;position:relative;overflow:hidden;isolation:isolate;transition:transform .35s var(--ease-out)}
@@ -229,7 +237,11 @@
   body.menu-open .nav-toggle span{background:transparent}
   body.menu-open .nav-toggle span::before{transform:translateY(5px) rotate(45deg)}
   body.menu-open .nav-toggle span::after{transform:translateY(-5px) rotate(-45deg)}
-  @media (max-width:900px){.nav-status{display:none}}
+  .lang.lang-mobile{display:none}
+  @media (max-width:1180px){.nav-status{display:none}.nav-links{gap:20px}}
+  @media (max-width:780px){.lang.lang-desktop{display:none}.lang.lang-mobile{display:inline-flex}}
+  .nav-inner .lang-desktop{margin-left:auto}
+  .nav-status + .lang-desktop{margin-left:8px}
   @media (max-width:780px){
     .nav-toggle{display:inline-flex}
     .nav-links{position:fixed;inset:var(--nav-h) 0 0 0;background:var(--paper);flex-direction:column;align-items:flex-start;gap:0;padding:32px 24px 40px;transform:translateY(-12px);opacity:0;pointer-events:none;transition:opacity .25s ease, transform .3s var(--ease-out);border-top:var(--bold);z-index:49}
@@ -324,7 +336,8 @@
   .section-head h2 .thin{font-weight:300;color:var(--ink-2)}
   .section-head h2 .outline{color:transparent;-webkit-text-stroke:2px var(--ink)}
   .section-head .lede{max-width:34ch;font-size:15px;line-height:1.5;color:var(--ink-2);margin:0;padding-bottom:10px}
-  @media (max-width:900px){.section-head{grid-template-columns:1fr;gap:16px;padding:72px 0 36px}.section-head .lede{padding:0}}
+  @media (max-width:1100px){.section-head{grid-template-columns:1fr;gap:16px}.section-head .lede{padding:0}}
+  @media (max-width:900px){.section-head{padding:72px 0 36px}}
 
   /* ── WORK: sticky-stacking case dossiers ─────────────── */
   section.work{border-top:var(--bold);padding-bottom:140px}
@@ -473,6 +486,33 @@
   .foot-mono a{color:inherit;text-decoration:none}
   .foot-mono a:hover{color:var(--accent-2)}
 
+  /* ── LANGUAGE TOGGLE ──────────────────────────────────── */
+  .lang{display:inline-flex;border:1px solid rgba(238,241,246,.35);font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+  .lang button{appearance:none;white-space:nowrap;background:transparent;border:none;color:rgba(238,241,246,.6);padding:7px 10px;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;transition:background .25s ease, color .25s ease}
+  .lang button + button{border-left:1px solid rgba(238,241,246,.35)}
+  .lang button[aria-pressed="true"]{background:var(--paper);color:var(--ink)}
+  .lang button:hover:not([aria-pressed="true"]){color:var(--paper)}
+  @media (max-width:780px){
+    .nav-links .lang{margin-top:28px;border-color:var(--ink);align-self:flex-start}
+    .nav-links .lang button{color:var(--ink-3);padding:12px 18px;font-size:12px}
+    .nav-links .lang button + button{border-left-color:var(--ink)}
+    .nav-links .lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+  }
+
+  /* ── JAPANESE TYPE: no italics, gentler tracking, taller leading ── */
+  html[lang="ja"]{--display:"Space Grotesk","Noto Sans JP",ui-sans-serif,system-ui,-apple-system,sans-serif}
+  html[lang="ja"] body{line-height:1.7}
+  html[lang="ja"] h1.headline{font-size:clamp(40px,9.4vw,144px);line-height:1.04;letter-spacing:-.02em}
+  html[lang="ja"] h1.headline .accent,html[lang="ja"] .case h3 em,html[lang="ja"] .belief-quote em{font-style:normal;font-weight:500}
+  html[lang="ja"] .section-head h2{font-size:clamp(34px,5.6vw,92px);line-height:1.08;letter-spacing:-.02em}
+  html[lang="ja"] .case h3{font-size:clamp(24px,2.8vw,42px);line-height:1.22;letter-spacing:-.02em}
+  html[lang="ja"] .step h3{font-size:clamp(26px,3vw,46px);line-height:1.1;letter-spacing:-.02em}
+  html[lang="ja"] .belief-quote{font-size:clamp(26px,3.8vw,56px);line-height:1.32;letter-spacing:-.01em}
+  html[lang="ja"] .cap h3,html[lang="ja"] .person .name{letter-spacing:-.01em;line-height:1.2}
+  html[lang="ja"] .ticker .row span{letter-spacing:-.01em}
+  html[lang="ja"] .hero-sub p,html[lang="ja"] .case p,html[lang="ja"] .cap p,html[lang="ja"] .step p,html[lang="ja"] .section-head .lede{line-height:1.75}
+  html[lang="ja"] .mono,html[lang="ja"] .stamp,html[lang="ja"] .case .client b,html[lang="ja"] .contact-form label,html[lang="ja"] .contact-aside .k,html[lang="ja"] .person .role,html[lang="ja"] .person .seat,html[lang="ja"] .step .dur{letter-spacing:.06em}
+
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
     h1.headline .w,h1.headline .accent{transform:none;-webkit-text-fill-color:var(--accent)}
@@ -500,6 +540,7 @@
       <span class="name">orochi<span>·</span>verse</span>
     </a>
     <span class="nav-status"><i aria-hidden="true"></i>Taking briefs for Q4 2026</span>
+    <div class="lang lang-desktop" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="ja" aria-pressed="false">日本語</button></div>
     <nav class="nav-links" id="nav-links" aria-label="Primary">
       <a href="#work">Work</a>
       <a href="#capabilities">Studio</a>
@@ -511,6 +552,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </span>
       </a>
+      <div class="lang lang-mobile" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="true">EN</button><button type="button" data-lang="ja" aria-pressed="false">日本語</button></div>
     </nav>
     <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
   </div>
@@ -1136,6 +1178,189 @@
 })();
 </script>
 
+<!-- Language layer: English lives in the markup, Japanese in this dictionary. -->
+<script>
+(function(){
+  const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>';
+  // [selector, japanese, attribute?]  — omit attribute to replace innerHTML.
+  const JA = [
+    ['title', 'Orochiverse — スケールするプロダクトを、届ける。'],
+    ['meta[name="description"]', '日本の大手鉄道会社・大企業に向けた、AI・ML・IoT・システムアーキテクチャのエンジニアリングパートナー。チームに入り込み、背骨を設計し、スケールするまで伴走します。', 'content'],
+    ['meta[property="og:title"]', 'Orochiverse — スケールするプロダクトを、届ける。', 'content'],
+    ['meta[property="og:description"]', '複数のストリーム、ひとつのコア。シグナルをスケールするシステムへ。', 'content'],
+
+    ['.nav-links > a[href="#work"]', '実績'],
+    ['.nav-links > a[href="#capabilities"]', '専門領域'],
+    ['.nav-links > a[href="#team"]', 'チーム'],
+    ['.nav-cta .label', 'お問い合わせ'],
+    ['.nav-status', '<i aria-hidden="true"></i>2026年Q4のご相談 受付中'],
+    ['#nav-toggle', 'メニュー', 'aria-label'],
+
+    ['.stamp', '2026年設立 <b>·</b> 東京 <b>·</b> 世界各地'],
+    ['.stamp', '2026年設立、東京および世界各地', 'aria-label'],
+    ['.hero-top .col .mono', '東京 · エンジニアリングパートナー'],
+    ['.hero-top .col p', '複数のストリーム、ひとつのコア。シグナルをスケールするシステムへ。それを実際に築いてきたエンジニアとともに。'],
+    ['h1.headline',
+      '<span class="line"><span class="w">プロダクトを</span></span>' +
+      '<span class="line"><span class="w outline">支える</span><span class="w accent">背骨</span><span class="w">を、</span></span>' +
+      '<span class="line"><span class="w"><span class="thin">私たちが</span>築く。<span class="caret" aria-hidden="true"></span></span></span>'],
+    ['.hero-sub p', '日本の大手鉄道会社・大企業に向けた、<strong>AI・ML・IoT</strong>およびシステムアーキテクチャのエンジニアリングパートナー。御社のチームに入り込み、コアを設計し、リリースし、スケールしても揺るがなくなるまで伴走します。'],
+    ['.hero-cta .cta-tag', '§ 開始'],
+    ['.hero-cta .cta-label', 'プロジェクトを始める'],
+    ['.hero-cta', 'Orochiverseとプロジェクトを始める', 'aria-label'],
+    ['.hero-foot .item:nth-child(1) .lbl', 'データの頭 · ひとつの体'],
+    ['.hero-foot .item:nth-child(2) .lbl', '1日あたりのイベント数（設計値）'],
+    ['.hero-foot .item:nth-child(3) .lbl', '% 稼働率のアーキテクチャ'],
+    ['.hero-foot .item:nth-child(4) .lbl', '鉄道・大企業のクライアント'],
+
+    ['.ticker .row.a', '<span>IoTパイプライン</span><span>リアルタイムML</span><span>エッジ推論</span><span>分散システム</span><span>ストリーム処理</span><span>クラウドネイティブ</span>'.repeat(2)],
+    ['.ticker .row.b', '<span>入り込む</span><span>設計する</span><span>届ける</span><span>スケールするまで伴走する</span>'.repeat(4)],
+
+    ['#work .section-head .num', '§ 実績 / 04'],
+    ['#work .section-head h2', '主な<span class="outline">実績。</span>'],
+    ['#work .section-head .lede', '4つの案件、ひとつの型。ボトルネックを見つけ、背骨を作り直し、私たちがいなくてもチームが運用できるシステムを引き渡す。'],
+
+    ['.case:nth-child(1) .outcome-lbl', '新コアで処理する月間通話数'],
+    ['.case:nth-child(1) .client b', 'コンタクトセンターSaaS'],
+    ['.case:nth-child(1) .client .mono', '2025年 · 9か月'],
+    ['.case:nth-child(1) h3', '稼働したまま、コンタクトセンターを<em>再構築</em>。'],
+    ['.case:nth-child(1) p', '新機能を出すたびに落ちていたモノリス。ルーティング・録音・分析をイベント駆動のコアへ、リージョンごとに移行。顧客に影響する切替停止はゼロでした。'],
+
+    ['.case:nth-child(2) .outcome-lbl', '台のゲートウェイ、ひとつのテレメトリ基盤'],
+    ['.case:nth-child(2) .client b', '産業機器OEM'],
+    ['.case:nth-child(2) .client .mono', '2025年 · 6か月'],
+    ['.case:nth-child(2) h3', '8,000台のゲートウェイに、<em>ひとつ</em>のパイプライン。'],
+    ['.case:nth-child(2) p', '拠点の回線が切れるたびにデータが欠けていたフリートのテレメトリ。エッジエージェントを蓄積転送型に作り直し、推論をゲートウェイへ移し、更新中の停電にも耐えるOTAを届けました。'],
+
+    ['.case:nth-child(3) .outcome .mono', ' 分'],
+    ['.case:nth-child(3) .outcome-lbl', '切替期間中のダウンタイム'],
+    ['.case:nth-child(3) .client b', 'クラウド通信'],
+    ['.case:nth-child(3) .client .mono', '2024年 · 4か月'],
+    ['.case:nth-child(3) h3', '音声APIをクラウド間で移行、<em>誰も気づかなかった。</em>'],
+    ['.case:nth-child(3) p', 'キャリア接続、メディアサーバー、課金を、並行稼働とキルスイッチ付きで移行。成果物はランブックそのもの。最後の切替は、私たちが同席せずに先方のオンコールチームが実施しました。'],
+
+    ['.case:nth-child(4) .outcome-lbl', 'の問い合わせを、出典付きの回答で解決'],
+    ['.case:nth-child(4) .client b', 'B2Bサポート基盤'],
+    ['.case:nth-child(4) .client .mono', '2026年 · 5か月'],
+    ['.case:nth-child(4) h3', '<em>根拠を示して</em>答えるエージェント。'],
+    ['.case:nth-child(4) p', '正しいかどうか誰にも判断できなかったチャットボットの試験導入。検索層、サポート責任者が読める評価ハーネス、確信度が下がった瞬間に人へ引き継ぐガードレールを構築しました。'],
+
+    ['#capabilities .section-head .num', '§ 専門領域'],
+    ['#capabilities .section-head h2', '4つの専門領域。<br/><span class="thin">ひとつのデリバリー。</span>'],
+    ['#capabilities .section-head .lede', '人数を売る会社ではありません。すべての案件に必要な専門領域を、本番で運用してきた人間が担当します。'],
+    ['.cap:nth-child(1) h3', 'IoT・エッジ'],
+    ['.cap:nth-child(1) p', 'センサー、ゲートウェイ、エッジ機器向けの、フリート規模のパイプライン。ネットワークが途切れても届くテレメトリ。'],
+    ['.cap:nth-child(2) h3', '応用AI'],
+    ['.cap:nth-child(2) p', 'デモではなく、本番のAI。RAG、エージェント、評価、ガードレール。賢い部分を信頼できるものにする、地味な部分を作ります。'],
+    ['.cap:nth-child(3) h3', '機械学習'],
+    ['.cap:nth-child(3) p', 'データセットからデプロイ済みモデルまで。特徴量ストア、学習基盤、ドリフト監視。再現性は標準装備です。'],
+    ['.cap:nth-child(4) h3', 'システムアーキテクチャ'],
+    ['.cap:nth-child(4) p', 'すべてを支える背骨。イベント駆動、マルチリージョン、可観測性、そして良い意味で退屈。必要になる前に、10倍の負荷に備えて作ります。'],
+
+    ['.belief-quote', 'ほとんどのアイデアは、<em>プロトタイプ</em>と<em>本番</em>の間の溝で死ぬ。<span class="bar" aria-hidden="true"></span>私たちはその溝を埋める。入り込み、設計し、届け、スケールするまで伴走する。'],
+    ['.steps', '案件の進め方', 'aria-label'],
+    ['.step:nth-child(1) h3', '入り込む'],
+    ['.step:nth-child(1) p', '御社のチームの中に座り、コードと障害履歴を読み、本当のボトルネックを見つけます。たいてい、資料に書いてある場所ではありません。'],
+    ['.step:nth-child(1) .dur', '第1〜2週'],
+    ['.step:nth-child(2) h3', '設計する'],
+    ['.step:nth-child(2) p', '1つのドキュメント、1つの図、議論できるトレードオフの一覧。必要になる前に10倍へスケールするコアを設計します。'],
+    ['.step:nth-child(2) .dur', '第2〜4週'],
+    ['.step:nth-child(3) h3', '届ける'],
+    ['.step:nth-child(3) p', '代わりに作るのではなく、一緒に作ります。ペアリング、レビュー、ランブックで、契約が終わっても知識が残るように。'],
+    ['.step:nth-child(3) .dur', '2〜6か月目'],
+    ['.step:nth-child(4) h3', '伴走する'],
+    ['.step:nth-child(4) p', 'リリース、最悪の一週間、リージョン障害をシステムが乗り越えるまで、オンコール当番に席を置き続けます。'],
+    ['.step:nth-child(4) .dur', '揺るがなくなるまで'],
+
+    ['#team .section-head .num', '§ チーム'],
+    ['#team .section-head h2', '複数の頭を<span class="thin">支える</span><br/><span class="outline">ひとつの体。</span>'],
+    ['#team .section-head .lede', '自ら手を動かす創業者と、案件ごとに招集するシニア専門家のベンチ。御社の時間で仕事を覚える人は、プロジェクトにいません。'],
+    ['.person:nth-child(1) .seat', '創業者'],
+    ['.person:nth-child(1) .portrait img', 'Orochiverse 創業者 兼 CTO、プラバル・ジェイン', 'alt'],
+    ['.person:nth-child(1) .role', '創業者 &amp; CTO'],
+    ['.person:nth-child(1) .bio', 'プロダクトエンジニアリング、クラウド通信、コンタクトセンター基盤。ゼロイチからグローバル展開まで。Build fast, fail fast.'],
+    ['.person:nth-child(1) .links a[href^="mailto"]', 'メール'],
+    ['.person:nth-child(2) .seat', 'ベンチ · 01'],
+    ['.person:nth-child(2) .name', 'IoT・エッジ リード'],
+    ['.person:nth-child(2) .role', 'ファームウェアからフリートまで'],
+    ['.person:nth-child(2) .bio', '現場の機器にOTAを配信し、失敗したときに呼び出された経験を持つ人。エッジ、ゲートウェイ、テレメトリ案件で参加します。'],
+    ['.person:nth-child(3) .seat', 'ベンチ · 02'],
+    ['.person:nth-child(3) .name', 'ML基盤 リード'],
+    ['.person:nth-child(3) .role', 'データセットからデプロイまで'],
+    ['.person:nth-child(3) .bio', '特徴量ストア、学習基盤、そしてプロダクトマネージャーが読める評価。応用AI・ML案件で参加します。'],
+    ['.person.open .seat', '空席'],
+    ['.person.open .name', 'シニアエンジニア'],
+    ['.person.open .role', '基盤 · SRE · システム'],
+    ['.person.open .bio', '採用はゆっくり、一緒にオンコールに立てる人だけ。心当たりがあれば、ご連絡ください。'],
+    ['.person.open .links .mono', 'ご連絡はこちら →'],
+
+    ['#contact .section-head .num', '§ お問い合わせ'],
+    ['#contact .section-head h2', 'アイデアがありますか？<br/><span class="thin">一緒に</span><span class="outline">検証</span><span class="thin">しましょう。</span>'],
+    ['label[for="f-name"]', 'お名前'],
+    ['#f-name', '山田 太郎', 'placeholder'],
+    ['label[for="f-email"]', '会社のメールアドレス'],
+    ['#f-email', 'yamada@company.co.jp', 'placeholder'],
+    ['label[for="f-company"]', '会社名'],
+    ['#f-company', '株式会社〇〇', 'placeholder'],
+    ['label[for="f-scope"]', 'ご相談内容'],
+    ['#f-scope option:nth-child(1)', '調査・アドバイザリー'],
+    ['#f-scope option:nth-child(2)', 'アーキテクチャ・設計'],
+    ['#f-scope option:nth-child(3)', '構築・常駐'],
+    ['#f-scope option:nth-child(4)', 'スケール・立て直し'],
+    ['label[for="f-msg"]', '何を作ろうとしていますか？'],
+    ['#f-msg', '一言二言で結構です。あとはこちらで引き継ぎます。', 'placeholder'],
+    ['.submit .submit-label', '送信する'],
+    ['.contact-aside .block:nth-child(1) .k', 'メール'],
+    ['.contact-aside .block:nth-child(2) .k', '営業時間'],
+    ['.contact-aside .block:nth-child(2) .v', '月〜金 9:00〜19:00（日本時間）。1営業日以内に返信します。'],
+    ['.contact-aside .block:nth-child(3) .k', '主なクライアント'],
+    ['.contact-aside .block:nth-child(3) .v', '日本の大手鉄道会社・大企業、そして世界各地の成長期のチーム。すべての案件に深く関わります。'],
+
+    ['.foot-inner .foot-mono:first-child', '© 2026 Orochiverse · 八つの頭、ひとつの体。'],
+    ['.foot-inner .foot-mono:last-child', '<a href="https://www.linkedin.com/in/prabaljainn" target="_blank" rel="noopener noreferrer">LinkedIn</a> &nbsp;/&nbsp; <a href="mailto:prabal@orochiverse.com">メール</a> &nbsp;/&nbsp; <a href="#top">トップへ ↑</a>'],
+  ];
+  // Every case card shares the same "read" link.
+  for(let i = 1; i <= 4; i++) JA.push([`.case:nth-child(${i}) .read`, '詳しい事例を聞く ' + ARROW]);
+
+  // Runtime strings used by the form script.
+  const STR = {
+    'Please fill the required fields.': '必須項目を入力してください。',
+    'That email looks off. Mind checking it?': 'メールアドレスをご確認ください。',
+    'Opening mail…': 'メールを開いています…',
+    'Mail client opened. Send the draft to finish.': 'メールソフトを開きました。下書きを送信して完了です。',
+    'Send message': '送信する'
+  };
+
+  const html = document.documentElement;
+  const original = new Map(); // element -> {html, attrs:{}} captured before the first swap
+
+  function apply(lang, persist){
+    JA.forEach(([sel, ja, attr])=>{
+      const el = document.querySelector(sel);
+      if(!el) return;
+      if(!original.has(el)) original.set(el, { html: el.innerHTML, attrs: {} });
+      const o = original.get(el);
+      if(attr){
+        if(!(attr in o.attrs)) o.attrs[attr] = el.getAttribute(attr);
+        el.setAttribute(attr, lang === 'ja' ? ja : o.attrs[attr]);
+      } else {
+        el.innerHTML = lang === 'ja' ? ja : o.html;
+      }
+    });
+    html.lang = lang;
+    document.querySelectorAll('.lang button').forEach(b=> b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false'));
+    if(persist){ try{ localStorage.setItem('lang', lang); }catch(e){} }
+    // Re-attach magnet handlers only need the same nodes; innerHTML swaps above never replace [data-magnet] elements themselves.
+  }
+
+  window.I18N = { str: s => (html.lang === 'ja' && STR[s]) || s, apply };
+
+  document.querySelectorAll('.lang button').forEach(b=> b.addEventListener('click', ()=> apply(b.dataset.lang, true)));
+  if(html.lang === 'ja') apply('ja');
+  else document.querySelectorAll('.lang button').forEach(b=> b.setAttribute('aria-pressed', b.dataset.lang === 'en' ? 'true' : 'false'));
+})();
+</script>
+
 <!-- Scroll behaviour + reveals + counters + magnet + form + nav -->
 <script>
 (function(){
@@ -1223,6 +1448,7 @@
     toastT = setTimeout(()=> toast.classList.remove('show'), ms);
   };
   const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const t = s => (window.I18N ? window.I18N.str(s) : s);
 
   form.addEventListener('submit', e=>{
     e.preventDefault();
@@ -1230,11 +1456,11 @@
     const get = k => (data.get(k) || '').toString().trim();
     const name = get('name'), email = get('email'), company = get('company'), scope = get('scope'), msg = get('msg');
 
-    if(!name || !email || !msg){ showToast('Please fill the required fields.'); return; }
-    if(!isEmail(email)){ showToast('That email looks off. Mind checking it?'); return; }
+    if(!name || !email || !msg){ showToast(t('Please fill the required fields.')); return; }
+    if(!isEmail(email)){ showToast(t('That email looks off. Mind checking it?')); return; }
 
     btn.disabled = true;
-    btnLabel.textContent = 'Opening mail…';
+    btnLabel.textContent = t('Opening mail…');
 
     const subject = `[Orochiverse] New enquiry from ${name}${company ? ' · '+company : ''}`;
     const body = [
@@ -1248,8 +1474,8 @@
 
     setTimeout(()=>{
       btn.disabled = false;
-      btnLabel.textContent = 'Send message';
-      showToast('Mail client opened. Send the draft to finish.', 3200);
+      btnLabel.textContent = t('Send message');
+      showToast(t('Mail client opened. Send the draft to finish.'), 3200);
     }, 600);
   });
 })();
